@@ -185,7 +185,7 @@ erDiagram
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/just-smile-dental.git
+git clone https://github.com/MahmoodNasher711/Dental.git
 
 # 2. Copy to XAMPP htdocs
 cp -r just-smile-dental/ C:/xampp/htdocs/Dental
