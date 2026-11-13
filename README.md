@@ -269,6 +269,8 @@ Detailed static reports are maintained in the repository root:
 - [DENTAL_CLEANUP_REPORT.md](DENTAL_CLEANUP_REPORT.md)
 
 ---
+## Author
+Mahmood Fahmi Abdo Mohammed Nasher
 
 ## License
 
