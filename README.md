@@ -170,6 +170,7 @@ Inspecting `database/` confirms **incremental migration scripts** (`002_schema_u
    - `database/002_schema_upgrade.sql`
    - `database/003_bilingual_upgrade.sql`
 
+<<<<<<< HEAD
 ### Local Configuration Setup
 1. Place the project in your Apache document root (e.g., `D:\wamp64\www\Dental` served at `/Dental`, matching default auto-detection in `includes/config.php`).
 2. Copy `includes/config.example.php` to `includes/config.local.php` (gitignored):
@@ -183,6 +184,23 @@ Inspecting `database/` confirms **incremental migration scripts** (`002_schema_u
 3. Ensure the web server has write access to upload targets:
    - `assets/uploads/avatars/`
    - `assets/images/doctors/`
+=======
+```bash
+# 1. Clone the repository
+git clone https://github.com/MahmoodNasher711/Dental.git
+
+# 2. Copy to XAMPP htdocs
+cp -r just-smile-dental/ C:/xampp/htdocs/Dental
+```
+
+3. Start **Apache** and **MySQL** from XAMPP Control Panel.
+
+4. Open **phpMyAdmin** → create database `appointment_system` → import `appointment_system.sql`.
+
+5. If your MySQL credentials differ from `root` / no password, edit `config.php`.
+
+6. Open `http://localhost/Dental/` in your browser.
+>>>>>>> 9a9f6b1539c804f3ccdc249cfa947e342ee30874
 
 ---
 
