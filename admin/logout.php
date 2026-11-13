@@ -1,16 +1,13 @@
-<?php 
+<?php
+require_once __DIR__ . '/../includes/bootstrap.php';
 
-	session_start();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Location: ' . DENTAL_BASE_URL . '/admin/index.php');
+    exit;
+}
 
-	$_SESSION = array();
-
-	if (isset($_COOKIE[session_name()])) {
-		setcookie(session_name(), '', time()-86400, '/');
-	}
-
-	session_destroy();
-
-	// redirecting the user to the login page
-	header('Location: ../login/login.php?action=logout');
-
- ?>
+csrf_verify();
+auth_logout();
+header('Location: ' . DENTAL_BASE_URL . '/login.php');
+exit;

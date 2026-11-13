@@ -1,28 +1,21 @@
 <?php
+require_once __DIR__ . '/../includes/auth.php';
+$admin = auth_require_admin();
 
-    session_start();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Location: appointments.php');
+    exit;
+}
 
-    // if(isset($_SESSION["user"])){
-    //     if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
-    //         header("location: ../login.php");
-    //     }
+csrf_verify();
 
-    // }else{
-    //     header("location: ../login.php");
-    // }
-    
-    
-    if($_GET){
-        //import database
-        include("../config.php");
-        $id=$_GET["id"];
-        //$result001= $database->query("select * from schedule where scheduleid=$id;");
-        //$email=($result001->fetch_assoc())["docemail"];
-        $sql= $conn->query("delete from appointments where appointment_id='$id';");
-        //$sql= $database->query("delete from doctor where docemail='$email';");
-        //print_r($email);
-        header("location: appointment.php");
-    }
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+if ($id && $id > 0) {
+    $stmt = $conn->prepare("DELETE FROM appointments WHERE appointment_id = :id");
+    $stmt->execute([':id' => $id]);
+    audit_log('DELETE_APPOINTMENT', "Deleted appointment ID $id", (int)$admin['id']);
+}
 
-
-?>
+header('Location: appointment.php');
+exit;

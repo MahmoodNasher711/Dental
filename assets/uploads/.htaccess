@@ -1,0 +1,13 @@
+Options -Indexes -ExecCGI
+
+# Strictly deny execution or serving of any server-side script files
+<FilesMatch "\.(php\d*|phtml|phar|pl|py|jsp|asp|sh|cgi|htaccess|user\.ini)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_fcgid.c>
+    <FilesMatch "\.(php\d*|phtml|phar)$">
+        SetHandler none
+        Require all denied
+    </FilesMatch>
+</IfModule>

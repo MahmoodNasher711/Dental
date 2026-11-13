@@ -1,0 +1,19 @@
+Options -Indexes
+
+# Block direct HTTP access to SQL dumps, logs, environment configs, and docs
+<FilesMatch "\.(sql|log|ini|env|bak|sh|bat|md)$">
+    Require all denied
+</FilesMatch>
+
+# Prevent direct HTTP execution/reading of internal architecture directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(includes|database|languages|templates|modules|migrations)/ - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>

@@ -1,54 +1,80 @@
-
-
-<?php require_once('header_patient.php') ?>
-<?php require_once('config.php') ?>
-
-
 <?php
+require_once __DIR__ . '/includes/bootstrap.php';
 
-        // if (isset($_POST['send'])) {
-          //require_once('config.php');
-          $sql= "SELECT * from dentists where dentist_id =:id ;";
-          $q= $conn->prepare($sql);
-          $q->execute(array(":id"=>$_GET['id']));
-          $stmt=$q->rowcount();
-          if($stmt)
-          {
-            $row = $q->fetch(); 
-           $name = $row['dentist_name'];
-          $email = $row['dentist_brief'];
-          $img = $row['image'];
+$pageTitle = __('doctor_profile_title');
+$activeNav = 'doctors';
 
-          
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$doctor = null;
+if ($id && $id > 0) {
+    $stmt = db()->prepare("SELECT * FROM dentists WHERE dentist_id = :id AND is_active = 1 LIMIT 1");
+    $stmt->execute([':id' => $id]);
+    $doctor = $stmt->fetch();
+}
 
+if (!$doctor) {
+    http_response_code(404);
+}
+
+require_once __DIR__ . '/templates/public/header.php';
 ?>
-<div class="dentists-details">
-  <div class="hero-heading-right">
-    <div class="container-15">
-      <div class="column-2">
-        <div class="image-wrapper-9">
-        <img src="imgs/<?php  echo $img;?>" alt="image">
-         </div>
+
+<section class="section-pad bg-ivory">
+  <div class="container">
+    <?php if ($doctor): ?>
+      <div class="mb-4">
+        <a href="<?php echo e(DENTAL_BASE_URL); ?>/doctors.php" class="text-decoration-none text-emerald fw-semibold small">
+          <i class="bi bi-arrow-left icon-directional me-1"></i> <?php _e('back_to_doctors'); ?>
+        </a>
       </div>
-      <div class="column-25">
-        <div class="column-25">
-          <div class="text-100"><?php echo "Dr\ $name" ?></div>
-          <div class="qualifications-hes-the-uks-leading-restorative-dentist-he-was-a-finalist-at-the-2015-aesthetic-dentistry-awards-for-best-restorative-case-he-was-at-the-mayo-clinic-one-of-the-worlds-top-oral-rehabilitation-centers-for-three-years-he-worked-to-become-an-advocate-for-biomimetic-dentistry---minimally-invasive-procedures-that-emulate-the-natural-properties-of-patients-teeth">
-            <div class="qualifications-hes-the-uks-leading-restorative-dentist-he-was-a-finalist-at-the-2015-aesthetic-dentistry-awards-for-best-restorative-case-he-was-at-the-mayo-clinic-one-of-the-worlds-top-oral-rehabilitation-centers-for-three-years-he-worked-to-become-an-advocate-for-biomimetic-dentistry---minimally-invasive-procedures-that-emulate-the-natural-properties-of-patients-teeth qualifications-hes-the-uks-leading-restorative-dentist-he-was-a-finalist-at-the-2015-aesthetic-dentistry-awards-for-best-restorative-case-he-was-at-the-mayo-clinic-one-of-the-worlds-top-oral-rehabilitation-centers-for-three-years-he-worked-to-become-an-advocate-for-biomimetic-dentistry---minimally-invasive-procedures-that-emulate-the-natural-properties-of-patients-teeth">
-              <span class="">
-              <?php echo  $email ?></span>
+      <div class="luxury-card p-4 p-md-5">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="hero-image-frame">
+              <img src="<?php echo e(get_dentist_photo_url($doctor['image'])); ?>" alt="<?php echo e(dentist_name($doctor)); ?>" style="height: 440px; object-position: top center;">
             </div>
           </div>
+          <div class="col-lg-7">
+            <?php $spec = dentist_specialization($doctor); ?>
+            <?php if (!empty($spec)): ?>
+              <span class="eyebrow-label"><?php echo e($spec); ?></span>
+            <?php endif; ?>
+            <h1 class="display-5 text-emerald mb-3"><?php echo e(dentist_name($doctor)); ?></h1>
+            <div class="gold-divider"></div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6">
+                <div class="p-3 bg-ivory rounded border">
+                  <div class="small text-muted-luxury"><?php _e('doctor_spec_label'); ?></div>
+                  <div class="fw-semibold text-emerald"><?php echo e($spec ?: '-'); ?></div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-3 bg-ivory rounded border">
+                  <div class="small text-muted-luxury"><?php _e('doctor_age_label'); ?></div>
+                  <div class="fw-semibold text-emerald"><?php echo (int)$doctor['dentist_age']; ?> <?php _e('doctor_years'); ?></div>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="h5 text-emerald mb-2"><?php _e('doctor_bio_label'); ?></h2>
+            <p class="text-muted-luxury mb-4" style="line-height: 1.85;">
+              <?php echo nl2br(e(dentist_bio($doctor))); ?>
+            </p>
+
+            <a href="<?php echo e(DENTAL_BASE_URL); ?>/booking.php?dentist_id=<?php echo (int)$doctor['dentist_id']; ?>" class="btn btn-luxury-primary">
+              <i class="bi bi-calendar-check"></i> <?php _e('book_with_doctor'); ?>
+            </a>
+          </div>
         </div>
-        <div class="actions">
-          <a href="appontment.php" class="button-8">
-            <div class="text-101">Book Appointment</div>
-          </a>
-        </div>
-        <?php?>
       </div>
-    </div>
+    <?php else: ?>
+      <div class="luxury-card p-5 text-center">
+        <h2 class="text-emerald mb-3"><?php _e('doctor_not_found'); ?></h2>
+        <a href="<?php echo e(DENTAL_BASE_URL); ?>/doctors.php" class="btn btn-luxury-primary"><?php _e('back_to_doctors'); ?></a>
+      </div>
+    <?php endif; ?>
   </div>
-</div>
-<?php } ?>
-<?php require_once('footer.php') ?>
+</section>
+
+<?php require_once __DIR__ . '/templates/public/footer.php'; ?>

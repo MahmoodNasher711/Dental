@@ -1,0 +1,61 @@
+# ==============================================================================
+# DENTAL Management System — Git Ignore Rules
+# ==============================================================================
+
+# --- Secrets, Local Credentials & Environment Configs ---
+includes/config.local.php
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.crt
+*.secret
+*cookie*.txt
+admin_cookie.txt
+
+# --- Sensitive Patient / User Uploads (preserve directory access guards) ---
+assets/uploads/*
+!assets/uploads/.htaccess
+assets/uploads/avatars/*
+login/uploaded_img/*
+!login/uploaded_img/.htaccess
+
+# --- Database Dumps & Backups (preserve incremental SQL migration scripts) ---
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*.bak
+*.dump
+backups/
+Dental_backups/
+appointment_system.sql
+*backup*.sql
+*dump*.sql
+*export*.sql
+!database/*.sql
+
+# --- Logs, Cache & Temporary Artifacts ---
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.orig
+php_error.log
+error_log
+cache/
+tmp/
+scratch/
+
+# --- OS & IDE Metadata ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

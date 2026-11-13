@@ -1,34 +1,21 @@
 <?php
+require_once __DIR__ . '/../includes/auth.php';
+$admin = auth_require_admin();
 
-require_once '../config.php';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Location: doctors.php');
+    exit;
+}
 
-//session_start();
-// $user_id = $_SESSION['user_id'];
+csrf_verify();
 
-// if(!isset($user_id)){
-//    header('location:../login/login.php');
-// };
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+if ($id && $id > 0) {
+    $stmt = $conn->prepare("DELETE FROM dentists WHERE dentist_id = :id");
+    $stmt->execute([':id' => $id]);
+    audit_log('DELETE_DENTIST', "Deleted dentist ID $id", (int)$admin['id']);
+}
 
-// if(isset($_GET['logout'])){
-//    unset($user_id);
-//    session_destroy();
-//    header('location:../login/login.php');
-// } 
-
-    
-    
-
-    
-    if($_GET){
-        //import database
-        $id=$_GET["id"];
-        $result001= $conn->query("select * from dentists where dentist_id=$id;");
-        $email=($result001->fetch())["dentist_email"];
-        //$sql= $database->query("delete from webuser where email='$email';");
-        $sql= $conn->query("delete from dentists where dentist_email='$email';");
-        //print_r($email);
-        header("location: doctors.php");
-    }
-    
-
-?>
+header('Location: doctors.php');
+exit;

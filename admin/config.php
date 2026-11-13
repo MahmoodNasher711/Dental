@@ -1,14 +1,6 @@
 <?php
-$server = 'localhost';
-$username = 'root';
-$password = '';
-$db_name = 'appointment_system';
-
-$conn = mysqli_connect($server, $username, $password, $db_name);
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-//echo "Connected successfully";
-?>
+/**
+ * Admin config bridge -> forwards to centralized PDO & Auth modules.
+ */
+require_once __DIR__ . '/../includes/auth.php';
+$adminUser = auth_require_admin();
